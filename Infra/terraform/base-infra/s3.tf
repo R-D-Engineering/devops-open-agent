@@ -12,11 +12,6 @@ resource "aws_s3_bucket" "artifact_bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "artifact_bucket" {
-  bucket = aws_s3_bucket.artifact_bucket.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_versioning" "artifact_bucket" {
   bucket = aws_s3_bucket.artifact_bucket.id
 
