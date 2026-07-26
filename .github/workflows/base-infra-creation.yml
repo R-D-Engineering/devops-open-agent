@@ -59,6 +59,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Install diffutils
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y diffutils
+
       - name: Terraform Format Check
         run: terraform fmt -check -diff
 
