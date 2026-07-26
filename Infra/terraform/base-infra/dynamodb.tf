@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "lock_files" {
-  name         = "${var.project}-lock-files"
-  hash_key     = "LockID"
+  name     = "${var.project}-lock-files"
+  hash_key = "LockID"
 
   attribute {
     name = "LockID"
