@@ -34,20 +34,20 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: base-infra
+        working-directory: Infra/terraform/base-infra
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.9.3
 
       # Optional: Enable caching to speed up init
       - name: Cache Terraform
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.terraform.d/plugin-cache
@@ -57,10 +57,10 @@ jobs:
             ${{ runner.os }}-terraform-
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Terraform Format Check
-        run: terraform fmt -check -diff
+        run: terraform fmt -check
 
       - name: Terraform Validate
         run: terraform validate
