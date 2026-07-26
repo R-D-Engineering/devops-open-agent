@@ -7,21 +7,27 @@ resource "aws_s3_bucket" "artifact_bucket" {
   acl           = "private"
   force_destroy = false
 
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
   tags = {
     Name    = "${var.project}-artifacts"
     Project = var.project
+  }
+}
+
+resource "aws_s3_bucket_versioning" "artifact_bucket" {
+  bucket = aws_s3_bucket.artifact_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "artifact_bucket" {
+  bucket = aws_s3_bucket.artifact_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 
