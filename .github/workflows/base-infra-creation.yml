@@ -1,4 +1,4 @@
-name: 'EKS-Creation-Using-Terraform'
+name: 'Devops OpenAgent Base Infra Creation'
 
 on:
   workflow_dispatch:
