@@ -1,18 +1,26 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuth();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading, mustChangePassword } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/login");
+    if (isLoading) {
+      return;
     }
-  }, [isAuthenticated, isLoading, router]);
+    if (!isAuthenticated) {
+      router.replace("/login");
+      return;
+    }
+    if (mustChangePassword && pathname !== "/change-password") {
+      router.replace("/change-password");
+    }
+  }, [isAuthenticated, isLoading, mustChangePassword, pathname, router]);
 
   if (isLoading) {
     return (
@@ -23,6 +31,10 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
+    return null;
+  }
+
+  if (mustChangePassword && pathname !== "/change-password") {
     return null;
   }
 

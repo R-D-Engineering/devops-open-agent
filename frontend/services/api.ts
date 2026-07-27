@@ -3,6 +3,8 @@ import axios from "axios";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
+export const AUTH_TOKEN_STORAGE_KEY = "kda_auth_token";
+
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -17,6 +19,13 @@ export function setAuthToken(token: string | null): void {
   } else {
     delete apiClient.defaults.headers.common.Authorization;
   }
+}
+
+function readStoredAuthToken(): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  return window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
 function isAppAuthFailure(error: {
@@ -48,13 +57,32 @@ function isAppAuthFailure(error: {
   return false;
 }
 
+// Always attach the latest token from localStorage so refreshes / races
+// cannot send authenticated API calls without Authorization.
+apiClient.interceptors.request.use((config) => {
+  const token = readStoredAuthToken();
+  if (token) {
+    config.headers = config.headers ?? {};
+    config.headers.Authorization = `Bearer ${token}`;
+  } else if (config.headers) {
+    delete config.headers.Authorization;
+  }
+  return config;
+});
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (isAppAuthFailure(error) && typeof window !== "undefined") {
       const path = window.location.pathname;
-      if (!path.startsWith("/login") && !path.startsWith("/signup")) {
-        window.localStorage.removeItem("kda_auth_token");
+      const isAuthPage =
+        path.startsWith("/login") ||
+        path.startsWith("/signup") ||
+        path.startsWith("/change-password");
+      // Only force logout for true auth failures when a token was present.
+      const hadToken = Boolean(readStoredAuthToken());
+      if (hadToken && !isAuthPage) {
+        window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
         delete apiClient.defaults.headers.common.Authorization;
         window.location.href = "/login";
       }

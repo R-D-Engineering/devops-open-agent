@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     version: str = "0.1.0"
 
     llm_provider: str = "openai"
+    fallback_llm_provider: str = Field(
+        default="",
+        description="Optional secondary LLM provider used when the primary fails.",
+    )
 
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
