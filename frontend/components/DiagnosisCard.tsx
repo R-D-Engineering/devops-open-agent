@@ -230,8 +230,10 @@ function SingleDiagnosisView({
           </div>
           <h2 className="panel-title">Diagnosis</h2>
           {status === "partial_success" && (
-            <p className="mt-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
-              Investigation completed, but AI reasoning returned a partial result.
+            <p className="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              Evidence was collected, but AI reasoning failed or returned a partial result.
+              Check the provider error below, then re-run after fixing LLM configuration
+              (or set <span className="font-mono">FALLBACK_LLM_PROVIDER</span>).
             </p>
           )}
         </div>
@@ -244,8 +246,18 @@ function SingleDiagnosisView({
       </div>
 
       {errorMessage && (
-        <div className="mb-5 whitespace-pre-line rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-          {errorMessage}
+        <div className="mb-5 space-y-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          <p className="font-semibold">AI provider error</p>
+          <p className="whitespace-pre-line font-mono text-xs leading-relaxed text-amber-900">
+            {errorMessage}
+          </p>
+          {diagnosis.additional_data_needed?.length > 0 && (
+            <ul className="list-disc space-y-1 pl-5 text-amber-900">
+              {diagnosis.additional_data_needed.map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
@@ -344,8 +356,9 @@ function MultiIssueDiagnosisView({
             </div>
             <h2 className="panel-title">Investigation Overview</h2>
             {status === "partial_success" && (
-              <p className="mt-2 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
-                Investigation completed, but AI reasoning returned a partial result.
+              <p className="mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                Evidence was collected, but AI reasoning failed or returned a partial result.
+                Check the provider error below, then re-run after fixing LLM configuration.
               </p>
             )}
           </div>
@@ -358,8 +371,11 @@ function MultiIssueDiagnosisView({
         </div>
 
         {errorMessage && (
-          <div className="mb-5 whitespace-pre-line rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-            {errorMessage}
+          <div className="mb-5 space-y-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            <p className="font-semibold">AI provider error</p>
+            <p className="whitespace-pre-line font-mono text-xs leading-relaxed text-amber-900">
+              {errorMessage}
+            </p>
           </div>
         )}
 

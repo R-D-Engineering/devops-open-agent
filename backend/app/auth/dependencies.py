@@ -7,6 +7,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.jwt import get_subject_from_token
+from app.db.models import User
 from app.db.session import get_db_session
 from app.models.auth import UserResponse
 from app.services.auth_service import AuthService
@@ -15,10 +16,10 @@ bearer_scheme = HTTPBearer(auto_error=False)
 auth_service = AuthService()
 
 
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
-    session: AsyncSession = Depends(get_db_session),
-) -> UserResponse:
+async def _resolve_user(
+    credentials: HTTPAuthorizationCredentials | None,
+    session: AsyncSession,
+) -> User:
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -48,9 +49,19 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found.",
         )
+    return user
 
-    return UserResponse(
-        id=user.id,
-        email=user.email,
-        created_at=user.created_at,
-    )
+
+async def get_current_user_record(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    session: AsyncSession = Depends(get_db_session),
+) -> User:
+    return await _resolve_user(credentials, session)
+
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    session: AsyncSession = Depends(get_db_session),
+) -> UserResponse:
+    user = await _resolve_user(credentials, session)
+    return auth_service.to_user_response(user)

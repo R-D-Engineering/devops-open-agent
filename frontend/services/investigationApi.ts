@@ -59,6 +59,13 @@ export const investigationApi = {
     return response.data;
   },
 
+  async rerunInvestigation(id: string): Promise<InvestigationStartResponse> {
+    const response = await apiClient.post<InvestigationStartResponse>(
+      `/api/v1/investigations/${id}/rerun`,
+    );
+    return response.data;
+  },
+
   async listClusters(): Promise<ClusterListResponse> {
     const response = await apiClient.get<ClusterListResponse>("/api/v1/clusters");
     return response.data;
