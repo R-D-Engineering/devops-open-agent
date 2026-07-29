@@ -36,7 +36,7 @@ resource "aws_instance" "bastion" {
     Env  = var.env
   }
 
-  user_data = <<-EOF
+  user_data = <<-"EOF"
   #!/usr/bin/env bash
   set -eux
   apt-get update
