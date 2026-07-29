@@ -1,8 +1,8 @@
 env                   = "dev"
 aws-region            = "us-east-1"
 vpc-cidr-block        = "10.16.0.0/16"
-vpc-name              = "vpc"
-igw-name              = "igw"
+vpc-name              = "devops-vpc"
+igw-name              = "devops-igw"
 pub-subnet-count      = 3
 pub-cidr-block        = ["10.16.0.0/20", "10.16.16.0/20", "10.16.32.0/20"]
 pub-availability-zone = ["us-east-1a", "us-east-1b", "us-east-1c"]
@@ -14,13 +14,13 @@ pri-sub-name          = "subnet-private"
 public-rt-name        = "public-route-table"
 private-rt-name       = "private-route-table"
 eip-name              = "elasticip-ngw"
-ngw-name              = "ngw"
-eks-sg                = "eks-sg"
+ngw-name              = "devops-ngw"
+eks-sg                = "devops-sg"
 
 # EKS
 is-eks-cluster-enabled     = true
 cluster-version            = "1.36"
-cluster-name               = "eks-cluster"
+cluster-name               = "devopsagent-cluster"
 endpoint-private-access    = true
 endpoint-public-access     = false
 ondemand_instance_types    = ["t3a.medium"]
