@@ -1,9 +1,8 @@
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
-}
-
 resource "aws_s3_bucket" "artifact_bucket" {
-  bucket        = var.s3_bucket_name != "" ? var.s3_bucket_name : "${var.project}-${random_id.bucket_suffix.hex}"
+  # Use a deterministic bucket name supplied by variable `s3_bucket_name`.
+  # Ensure this bucket name is globally unique in S3; we expect the name
+  # 'devops-openagent-state' to be used (set in base-infra.tfvars).
+  bucket        = var.s3_bucket_name
   force_destroy = false
 
   tags = {
