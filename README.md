@@ -255,8 +255,6 @@ DevOps Open Agent meters token usage across the shared LLM layer and shows estim
 - Runtime pricing is stored on the data volume at `data/pricing_table.json` (seeded from `backend/app/ai/pricing_table.json`). Editing either path works; UI edits survive container restarts when the volume is mounted.
 - Budget alerts require Slack and/or Teams to be enabled under Integrations. Alerts use today’s UTC spend across **all** providers, not per-model.
 
-**Audit log:** open **Audit** in the sidebar (`/audit`) to see who started investigations and who changed integration settings.
-
 Example (`backend/.env`):
 
 ```env
@@ -299,6 +297,23 @@ After changing provider settings, recreate the backend so `backend/.env` is relo
 docker compose up -d --force-recreate backend
 ```
 
+## Audit log
+
+Platform **Audit** (`/audit`) records a structured trail of who did what — useful for enterprise accountability without digging through app logs.
+
+![DevOps Open Agent — structured audit log and Slack/Teams deep links](img/devops-open-agent-audit-deeplinks-poster.png)
+
+| Event | What is recorded |
+|-------|------------------|
+| **Investigation started** | Actor, agent type, investigation id |
+| **Investigation re-run** | Actor and investigation id |
+| **Integration updated** | Actor and which integration settings changed (never secret values) |
+| **Pricing / budget updated** | Actor and Usage settings changes |
+
+Filter by action in the UI. Events are scoped to the signed-in user. Secrets (tokens, webhooks, passwords) are never written to the audit trail.
+
+**API** (authenticated): `GET /api/v1/audit/events`
+
 ## Integrations
 
 Deliver AI recommendations from investigations and PR reviews to the tools your team already uses — enrich AI analysis with MCP servers — and pull **Prometheus/Grafana observability evidence** into Kubernetes and AWS investigations. Configure everything under **Integrations** in the UI.
@@ -325,6 +340,18 @@ Slack, Microsoft Teams, and PagerDuty support:
 - Configurable alert cooldown to reduce fatigue
 - **Send test** button to verify delivery
 - Optional instance-level defaults in `backend/.env` (for GitHub webhook events)
+- **Deep links** back to the investigation (or PR review) detail page in the UI
+
+### Investigation deep links (Slack / Teams / PagerDuty)
+
+When an investigation alert is posted, the message includes a URL that opens the matching investigation detail in DevOps Open Agent — not a dead-end chat card.
+
+- Set `PUBLIC_APP_URL` to your reachable frontend base (for example `https://devops.example.com` or `http://localhost:3000`).
+- Kubernetes alerts link to `/investigations/{id}`.
+- AWS and Cloud Cost alerts use the same detail route with a `?from=` return path so **Back** lands on the right history page.
+- Investigation detail also has **Copy link** for sharing the same URL outside chat.
+
+Without `PUBLIC_APP_URL`, alerts still deliver the AI summary; deep links are omitted.
 
 ### Slack
 
@@ -347,6 +374,7 @@ Regenerate the Slack diagram: `python3 scripts/build_slack_flow_diagram.py`
 
 - Root cause, summary, suggested fix, and validation steps from AI investigations (Kubernetes, AWS, Cloud Cost)
 - Final recommendation and risk summary from PR reviews
+- **Deep link** to the investigation (or PR review) detail page when `PUBLIC_APP_URL` is set
 - Per-user channel or webhook under **Integrations → Slack** in the UI
 - Optional per-agent toggles (enable/disable notifications per module)
 
@@ -392,6 +420,7 @@ PUBLIC_APP_URL=http://localhost:3000
 
 - Root cause, summary, suggested fix, and validation steps from AI investigations (Kubernetes, AWS, Cloud Cost)
 - Final recommendation and risk summary from PR reviews
+- **Deep link** to the investigation (or PR review) detail page when `PUBLIC_APP_URL` is set
 - Per-user webhook under **Integrations → Microsoft Teams** in the UI
 - Optional per-agent toggles (enable/disable notifications per module)
 
