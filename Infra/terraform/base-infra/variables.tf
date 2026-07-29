@@ -7,11 +7,11 @@ variable "aws_region" {
 variable "project" {
   description = "Project name prefix for resources"
   type        = string
-  default     = "devops-open-agent"
+  default     = "devops-openagent"
 }
 
 variable "s3_bucket_name" {
-  description = "Optional explicit S3 bucket name. Leave empty to create a generated name."
+  description = "Explicit S3 bucket name for Terraform backend state"
   type        = string
-  default     = ""
+  default     = "devops-openagent-state"
 }
