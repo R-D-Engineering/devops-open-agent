@@ -88,6 +88,50 @@ class LLMProviderFactory:
 
         raise ValueError(f"Unsupported LLM provider: {name}")
 
+    @classmethod
+    async def generate_with_fallback(
+        cls,
+        messages: list[dict[str, str]],
+        *,
+        settings: Settings | None = None,
+        temperature: float = 0.1,
+        primary_provider: str | None = None,
+    ) -> tuple[str, str]:
+        """Generate text with optional FALLBACK_LLM_PROVIDER retry.
+
+        Returns ``(text, provider_name_used)``.
+        """
+        from loguru import logger
+
+        from app.ai.providers.exceptions import LLMProviderError
+
+        settings = settings or get_settings()
+        primary = (primary_provider or settings.llm_provider).strip().lower()
+        fallback = (settings.fallback_llm_provider or "").strip().lower()
+
+        try:
+            provider = cls.create(provider_name=primary, settings=settings)
+            text = await provider.generate(messages, temperature=temperature)
+            return text, primary
+        except Exception as primary_exc:
+            if not fallback or fallback == primary:
+                raise
+            logger.warning(
+                "Primary LLM failed; trying fallback | primary={} fallback={} error={}",
+                primary,
+                fallback,
+                primary_exc,
+            )
+            try:
+                provider = cls.create(provider_name=fallback, settings=settings)
+                text = await provider.generate(messages, temperature=temperature)
+                return text, fallback
+            except Exception as fallback_exc:
+                raise LLMProviderError(
+                    f"Primary LLM ({primary}) failed: {primary_exc}. "
+                    f"Fallback LLM ({fallback}) also failed: {fallback_exc}"
+                ) from fallback_exc
+
 
 # Backward-compatible alias
 LLMFactory = LLMProviderFactory

@@ -6,13 +6,13 @@ import { useAuth } from "@/context/AuthContext";
 
 export function RedirectIfAuthenticated({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, mustChangePassword } = useAuth();
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace("/");
+      router.replace(mustChangePassword ? "/change-password" : "/");
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, mustChangePassword, router]);
 
   if (isLoading || isAuthenticated) {
     return (

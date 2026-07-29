@@ -18,21 +18,22 @@ export function formatLlmProviderLabel(provider: string | null | undefined): str
 }
 
 function providerStyles(provider: string): string {
+  // Use darker text colors so badges stay readable on the light content surface.
   switch (provider.toLowerCase()) {
     case "openai":
-      return "border-emerald-500/25 bg-emerald-500/10 text-emerald-200";
+      return "border-emerald-300 bg-emerald-50 text-emerald-900";
     case "ollama":
-      return "border-violet-500/25 bg-violet-500/10 text-violet-200";
+      return "border-violet-300 bg-violet-50 text-violet-900";
     case "anthropic":
-      return "border-orange-500/25 bg-orange-500/10 text-orange-200";
+      return "border-orange-300 bg-orange-50 text-orange-900";
     case "openrouter":
-      return "border-sky-500/25 bg-sky-500/10 text-sky-200";
+      return "border-sky-300 bg-sky-50 text-sky-900";
     case "gemini":
-      return "border-blue-500/25 bg-blue-500/10 text-blue-200";
+      return "border-blue-300 bg-blue-50 text-blue-900";
     case "bedrock":
-      return "border-amber-500/25 bg-amber-500/10 text-amber-200";
+      return "border-amber-300 bg-amber-50 text-amber-900";
     default:
-      return "border-slate-500/25 bg-slate-500/10 text-slate-200";
+      return "border-slate-300 bg-slate-50 text-slate-900";
   }
 }
 
@@ -45,12 +46,12 @@ export function LlmProviderBadge({ provider }: { provider?: string | null }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium ${providerStyles(provider)}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${providerStyles(provider)}`}
       title={`AI diagnosis powered by ${label}`}
     >
-      <span className="text-[10px] font-semibold uppercase tracking-wide opacity-80">AI</span>
-      <span className="opacity-60">·</span>
-      <span>{label}</span>
+      <span className="text-[10px] font-bold uppercase tracking-wide text-current">AI</span>
+      <span className="text-current opacity-50">·</span>
+      <span className="text-current">{label}</span>
     </span>
   );
 }

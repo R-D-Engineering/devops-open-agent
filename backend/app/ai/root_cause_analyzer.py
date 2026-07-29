@@ -38,17 +38,20 @@ class RootCauseAnalyzer:
         messages = self.prompt_builder.build_messages(context)
 
         try:
-            provider = LLMProviderFactory.create(settings=self.settings)
-            raw_response = await provider.generate(messages, temperature=0.1)
+            raw_response, provider_used = await LLMProviderFactory.generate_with_fallback(
+                messages,
+                settings=self.settings,
+                temperature=0.1,
+            )
             diagnosis = self._parse_response(raw_response)
-            diagnosis.llm_provider = self.settings.llm_provider
+            diagnosis.llm_provider = provider_used
             investigation_dict = self._as_dict(investigation)
             diagnosis = self.multi_pod_enricher.enrich(diagnosis, investigation_dict)
             diagnosis = self.confidence_engine.apply(diagnosis, investigation_dict)
             diagnosis = self.fix_recommendation_engine.apply(diagnosis)
             logger.info(
                 "AI diagnosis generated | provider={} confidence={}",
-                self.settings.llm_provider,
+                provider_used,
                 diagnosis.confidence_score,
             )
             return diagnosis
@@ -60,22 +63,35 @@ class RootCauseAnalyzer:
             return self.create_fallback_diagnosis(str(exc))
 
     def create_fallback_diagnosis(self, error: str | None = None) -> DiagnosisResult:
+        fallback = (self.settings.fallback_llm_provider or "").strip()
+        tips = [
+            "Check LLM_PROVIDER and API credentials in backend/.env",
+            "Verify the model name is valid for your provider",
+            "Confirm network access to the LLM endpoint (e.g. Ollama / OpenAI)",
+        ]
+        if fallback:
+            tips.append(f"Fallback provider '{fallback}' was also tried and failed")
+        else:
+            tips.append("Optionally set FALLBACK_LLM_PROVIDER for automatic retry on another provider")
+
         return DiagnosisResult(
             root_cause="Unable to generate AI diagnosis",
-            summary="Kubernetes evidence was collected, but LLM reasoning failed.",
+            summary=(
+                "Infrastructure evidence was collected successfully, but the AI provider "
+                "could not complete reasoning. The investigation data below is still available."
+            ),
             evidence=[],
-            suggested_fix="Review LLM provider configuration and retry diagnosis.",
+            suggested_fix=(
+                "Fix the LLM provider configuration (or set FALLBACK_LLM_PROVIDER), then "
+                "re-run this investigation."
+            ),
             kubectl_commands=[],
             validation_steps=[],
             prevention_recommendation="",
             confidence_score=0,
             confidence_reason="LLM call failed.",
             needs_more_data=True,
-            additional_data_needed=[
-                "Check LLM provider configuration",
-                "Verify API key",
-                "Verify model name",
-            ],
+            additional_data_needed=tips,
             llm_provider=self.settings.llm_provider,
             llm_error=error,
         )
