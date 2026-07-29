@@ -33,6 +33,22 @@ variable "base_infra_dynamodb_table_name" {
   type = string
 }
 
+# Bastion host configuration
+variable "create_bastion" {
+  type    = bool
+  default = true
+}
+
+variable "bastion_instance_type" {
+  type    = string
+  default = "t2.medium"
+}
+
+variable "bastion_public_subnet_index" {
+  type    = number
+  default = 0
+}
+
 #IAM
 variable "is_eks_role_enabled" {
   type = bool

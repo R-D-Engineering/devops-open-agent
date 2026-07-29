@@ -50,3 +50,9 @@ addons = [
   }
   # Add more addons as needed
 ]
+
+# Bastion configuration
+create_bastion               = true
+bastion_instance_type        = "t2.medium"
+# index into public subnets (0..n-1)
+bastion_public_subnet_index  = 0
