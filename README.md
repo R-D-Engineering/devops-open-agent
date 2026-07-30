@@ -239,14 +239,16 @@ Configure one provider in `backend/.env` — every investigation, diagnosis, and
 
 DevOps Open Agent meters token usage across the shared LLM layer and shows estimated spend in the UI — so teams can see what AI analysis is costing and get alerted before spend surprises finance.
 
+![LLM cost control — usage budget alerts and editable pricing](img/devops-open-agent-budget-pricing-poster.png)
+
 ![LLM cost visibility for DevOps Open Agent](img/llm-cost-visibility-devops-open-agent.png)
 
 | Surface | What you get |
 |---------|----------------|
 | **Usage** (`/usage`) | Spend and tokens by day, agent, provider, and call kind; date-range filters |
 | **Investigation detail / history** | Per-run token totals and estimated USD |
-| **Daily budget** | Per-user USD threshold on the Usage page; Slack/Teams alert once per UTC day when today’s **total** estimated spend crosses it |
-| **Pricing** (`/usage/pricing`) | Editable rates (`input_per_1m_usd` / `output_per_1m_usd`) used for estimates |
+| **Daily budget alerts** | Per-user USD threshold on the Usage page (for example warn at `$X` / day); Slack/Teams alert **once per UTC day** when today’s **total** estimated spend crosses it |
+| **Editable pricing** (`/usage/pricing`) | Update `input_per_1m_usd` / `output_per_1m_usd` in the UI, or edit `pricing_table.json` on disk |
 
 **Notes**
 
