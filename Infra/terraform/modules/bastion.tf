@@ -36,7 +36,7 @@ resource "aws_instance" "bastion" {
     Env  = var.env
   }
 
-  user_data = <<-"EOF"
+  user_data = <<-EOF
   #!/usr/bin/env bash
   set -eux
   apt-get update
@@ -49,7 +49,7 @@ resource "aws_instance" "bastion" {
 
   # Install kubectl (stable)
   KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
-  curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+  curl -LO "https://dl.k8s.io/release/${"$"}KUBECTL_VERSION/bin/linux/amd64/kubectl"
   install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
   # Install Helm
