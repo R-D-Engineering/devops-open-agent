@@ -10,6 +10,14 @@ terraform {
       version = ">= 3.0.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "devops-openagent-state"
+    key            = "base-infra/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "devops-openagent-lock-files"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
