@@ -50,6 +50,18 @@ variable "addons" {
   }))
 }
 
+variable "base_infra_s3_bucket_name" {
+  description = "Static S3 bucket name used for base infra state and artifacts"
+  type        = string
+  default     = "devops-openagent-state"
+}
+
+variable "base_infra_dynamodb_table_name" {
+  description = "Static DynamoDB table name used for base infra state locking"
+  type        = string
+  default     = "devops-openagent-lock-files"
+}
+
 variable "create_bastion" {
   type    = bool
   default = true
