@@ -49,3 +49,18 @@ variable "addons" {
     version = string
   }))
 }
+
+variable "create_bastion" {
+  type    = bool
+  default = true
+}
+
+variable "bastion_instance_type" {
+  type    = string
+  default = "t2.medium"
+}
+
+variable "bastion_public_subnet_index" {
+  type    = number
+  default = 0
+}
