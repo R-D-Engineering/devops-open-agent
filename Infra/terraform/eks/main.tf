@@ -9,8 +9,8 @@ module "eks" {
   cluster-name                   = "${local.env}-${local.org}-${var.cluster-name}"
   cidr-block                     = var.vpc-cidr-block
   vpc-name                       = "${local.env}-${local.org}-${var.vpc-name}"
-  base_infra_s3_bucket_name      = data.terraform_remote_state.base_infra.outputs.s3_bucket_name
-  base_infra_dynamodb_table_name = data.terraform_remote_state.base_infra.outputs.dynamodb_table_name
+  base_infra_s3_bucket_name      = var.base_infra_s3_bucket_name
+  base_infra_dynamodb_table_name = var.base_infra_dynamodb_table_name
   igw-name                       = "${local.env}-${local.org}-${var.igw-name}"
   pub-subnet-count               = var.pub-subnet-count
   pub-cidr-block                 = var.pub-cidr-block
