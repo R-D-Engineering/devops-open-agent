@@ -41,5 +41,9 @@ module "eks" {
   endpoint-private-access       = var.endpoint-private-access
   endpoint-public-access        = var.endpoint-public-access
 
+  create_bastion              = var.create_bastion
+  bastion_instance_type       = var.bastion_instance_type
+  bastion_public_subnet_index = var.bastion_public_subnet_index
+
   addons = var.addons
 }
