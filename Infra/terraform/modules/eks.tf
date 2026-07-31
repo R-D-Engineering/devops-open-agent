@@ -36,10 +36,18 @@ resource "aws_iam_openid_connect_provider" "eks-oidc" {
 
 # AddOns for EKS Cluster
 resource "aws_eks_addon" "eks-addons" {
-  for_each      = { for idx, addon in var.addons : idx => addon }
-  cluster_name  = aws_eks_cluster.eks[0].name
-  addon_name    = each.value.name
-  addon_version = each.value.version != null ? each.value.version : null
+  for_each = { for idx, addon in var.addons : idx => addon }
+
+  cluster_name             = aws_eks_cluster.eks[0].name
+  addon_name               = each.value.name
+  addon_version            = each.value.version
+  resolve_conflicts        = "OVERWRITE"
+  service_account_role_arn = each.value.name == "aws-ebs-csi-driver" ? aws_iam_role.ebs_csi_driver_role[0].arn : null
+
+  timeouts {
+    create = "25m"
+    delete = "15m"
+  }
 
   depends_on = [
     aws_eks_node_group.ondemand-node,
