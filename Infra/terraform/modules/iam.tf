@@ -95,3 +95,26 @@ resource "aws_iam_role_policy_attachment" "eks-oidc-policy-attach" {
   role       = aws_iam_role.eks_oidc.name
   policy_arn = aws_iam_policy.eks-oidc-policy.arn
 }
+
+# IAM Role for EBS CSI Driver Addon
+resource "aws_iam_role" "ebs_csi_driver_role" {
+  count = var.is_eks_role_enabled ? 1 : 0
+  name  = "${local.cluster_name}-ebs-csi-driver-role-${random_integer.random_suffix.result}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "eks.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
+  count      = var.is_eks_role_enabled ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.ebs_csi_driver_role[count.index].name
+}
