@@ -15,12 +15,12 @@ public-rt-name        = "public-route-table"
 private-rt-name       = "private-route-table"
 eip-name              = "elasticip-ngw"
 ngw-name              = "devops-ngw"
-eks-sg                = "devops-sg"
+eks-sg                = "devops-openagent-sg"
 
 # EKS
 is-eks-cluster-enabled     = true
 cluster-version            = "1.36"
-cluster-name               = "devopsagent-cluster"
+cluster-name               = "devops-openagent-cluster"
 endpoint-private-access    = true
 endpoint-public-access     = false
 ondemand_instance_types    = ["t3a.medium"]
@@ -34,19 +34,19 @@ max_capacity_spot          = "10"
 addons = [
   {
     name    = "vpc-cni"
-    version = "v1.20.0-eksbuild.2"
+    version = ""
   },
   {
     name    = "coredns"
-    version = "v1.11.4-eksbuild.1"
+    version = ""
   },
   {
     name    = "kube-proxy"
-    version = "v1.36.0-eksbuild.1"
+    version = ""
   },
   {
     name    = "aws-ebs-csi-driver"
-    version = "v1.33.0-eksbuild.2"
+    version = ""
   }
   # Add more addons as needed
 ]

@@ -32,7 +32,7 @@ resource "aws_instance" "bastion" {
   }
 
   tags = {
-    Name = "${var.env}-${var.cluster-name}-bastion"
+    Name = "${var.resource_prefix}-bastion"
     Env  = var.env
   }
 
@@ -71,7 +71,7 @@ resource "tls_private_key" "bastion" {
 
 resource "aws_key_pair" "bastion_key" {
   count      = var.create_bastion ? 1 : 0
-  key_name   = "bastion-${var.env}-${var.cluster-name}"
+  key_name   = "${var.resource_prefix}-bastion"
   public_key = tls_private_key.bastion[0].public_key_openssh
 }
 
