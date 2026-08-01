@@ -70,6 +70,9 @@ if ! command -v aws >/dev/null 2>&1; then
   exit 1
 fi
 
+export AWS_REGION="$AWS_REGION"
+export AWS_DEFAULT_REGION="$AWS_REGION"
+
 DYNAMODB_TABLE_NAME="${PROJECT_NAME}-lock-files"
 
 # Ensure bucket exists
