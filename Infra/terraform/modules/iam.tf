@@ -1,5 +1,7 @@
 locals {
   cluster_name = var.cluster-name
+  # short form used for resources with strict name limits (IAM role names <=64 chars)
+  cluster_name_short = substr(var.cluster-name, 0, 30)
 }
 
 resource "random_integer" "random_suffix" {
@@ -9,7 +11,7 @@ resource "random_integer" "random_suffix" {
 
 resource "aws_iam_role" "eks-cluster-role" {
   count = var.is_eks_role_enabled ? 1 : 0
-  name  = "${local.cluster_name}-role-${random_integer.random_suffix.result}"
+  name  = "${local.cluster_name_short}-role-${random_integer.random_suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -31,7 +33,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
 
 resource "aws_iam_role" "eks-nodegroup-role" {
   count = var.is_eks_nodegroup_role_enabled ? 1 : 0
-  name  = "${local.cluster_name}-nodegroup-role-${random_integer.random_suffix.result}"
+  name  = "${local.cluster_name_short}-nodegroup-role-${random_integer.random_suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -99,7 +101,7 @@ resource "aws_iam_role_policy_attachment" "eks-oidc-policy-attach" {
 # IAM Role for EBS CSI Driver Addon
 resource "aws_iam_role" "ebs_csi_driver_role" {
   count = var.is_eks_role_enabled ? 1 : 0
-  name  = "${local.cluster_name}-ebs-csi-driver-role-${random_integer.random_suffix.result}"
+  name  = "${local.cluster_name_short}-ebs-csi-driver-role-${random_integer.random_suffix.result}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
