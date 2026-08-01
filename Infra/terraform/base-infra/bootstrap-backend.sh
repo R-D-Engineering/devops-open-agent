@@ -43,6 +43,12 @@ while [[ $# -gt 0 ]]; do
       TFVARS_FILE="${1#--var-file=}"
       shift
       ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      usage
+      ;;
+  esac
+done
 
 parse_tfvar() {
   local key="$1"
