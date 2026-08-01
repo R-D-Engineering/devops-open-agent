@@ -51,7 +51,8 @@ resource "aws_eks_addon" "eks-addons" {
 
   depends_on = [
     aws_eks_node_group.ondemand-node,
-    aws_eks_node_group.spot-node
+    aws_eks_node_group.spot-node,
+    aws_iam_role_policy_attachment.ebs_csi_driver_policy,
   ]
 }
 
