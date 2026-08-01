@@ -1,8 +1,8 @@
 resource "aws_s3_bucket" "artifact_bucket" {
-  # Use a deterministic bucket name supplied by variable `s3_bucket_name`.
-  # Ensure this bucket name is globally unique in S3; we expect the name
-  # 'devops-openagent-state' to be used (set in base-infra.tfvars).
-  bucket        = var.s3_bucket_name
+  # Use a deterministic bucket name supplied by variable `artifact_bucket_name`.
+  # This bucket is separate from the Terraform backend state bucket, which is
+  # bootstrapped as `devops-openagent-base`.
+  bucket        = var.artifact_bucket_name
   force_destroy = false
 
   tags = {

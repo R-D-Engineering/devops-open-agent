@@ -12,7 +12,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "devops-openagent-state"
+    bucket         = "devops-openagent-base"
     key            = "base-infra/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "devops-openagent-lock-files"
