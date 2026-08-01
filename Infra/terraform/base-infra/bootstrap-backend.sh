@@ -26,17 +26,23 @@ while [[ $# -gt 0 ]]; do
       TFVARS_FILE="$1"
       shift
       ;;
-    *)
-      echo "Unknown argument: $1" >&2
-      usage
+    -var-file=*)
+      TFVARS_FILE="${1#-var-file=}"
+      shift
       ;;
-  esac
-done
-
-if [[ ! -f "$TFVARS_FILE" ]]; then
-  echo "Terraform variables file not found: $TFVARS_FILE" >&2
-  exit 1
-fi
+    --var-file)
+      shift
+      if [[ $# -eq 0 ]]; then
+        echo "Missing value for --var-file" >&2
+        usage
+      fi
+      TFVARS_FILE="$1"
+      shift
+      ;;
+    --var-file=*)
+      TFVARS_FILE="${1#--var-file=}"
+      shift
+      ;;
 
 parse_tfvar() {
   local key="$1"
