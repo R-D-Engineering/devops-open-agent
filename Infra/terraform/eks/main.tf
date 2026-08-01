@@ -1,29 +1,30 @@
 locals {
-  org = "devops-openagent"
-  env = var.env
+  prefix = "devops-openagent"
+  env    = var.env
 }
 
 module "eks" {
-  source                         = "../modules"
-  env                            = var.env
-  cluster-name                   = "${local.env}-${local.org}-${var.cluster-name}"
+  source = "../modules"
+  env    = var.env
+  # Use a fixed prefix to keep resource names predictable and short
+  cluster-name                   = "${local.prefix}-${substr(var.cluster-name, 0, 20)}"
   cidr-block                     = var.vpc-cidr-block
-  vpc-name                       = "${local.env}-${local.org}-${var.vpc-name}"
+  vpc-name                       = "${local.prefix}-${substr(var.vpc-name, 0, 20)}"
   base_infra_s3_bucket_name      = var.base_infra_s3_bucket_name
   base_infra_dynamodb_table_name = var.base_infra_dynamodb_table_name
-  igw-name                       = "${local.env}-${local.org}-${var.igw-name}"
+  igw-name                       = "${local.prefix}-${substr(var.igw-name, 0, 20)}"
   pub-subnet-count               = var.pub-subnet-count
   pub-cidr-block                 = var.pub-cidr-block
   pub-availability-zone          = var.pub-availability-zone
-  pub-sub-name                   = "${local.env}-${local.org}-${var.pub-sub-name}"
+  pub-sub-name                   = "${local.prefix}-${substr(var.pub-sub-name, 0, 20)}"
   pri-subnet-count               = var.pri-subnet-count
   pri-cidr-block                 = var.pri-cidr-block
   pri-availability-zone          = var.pri-availability-zone
-  pri-sub-name                   = "${local.env}-${local.org}-${var.pri-sub-name}"
-  public-rt-name                 = "${local.env}-${local.org}-${var.public-rt-name}"
-  private-rt-name                = "${local.env}-${local.org}-${var.private-rt-name}"
-  eip-name                       = "${local.env}-${local.org}-${var.eip-name}"
-  ngw-name                       = "${local.env}-${local.org}-${var.ngw-name}"
+  pri-sub-name                   = "${local.prefix}-${substr(var.pri-sub-name, 0, 20)}"
+  public-rt-name                 = "${local.prefix}-${substr(var.public-rt-name, 0, 20)}"
+  private-rt-name                = "${local.prefix}-${substr(var.private-rt-name, 0, 20)}"
+  eip-name                       = "${local.prefix}-${substr(var.eip-name, 0, 20)}"
+  ngw-name                       = "${local.prefix}-${substr(var.ngw-name, 0, 20)}"
   eks-sg                         = var.eks-sg
 
   is_eks_role_enabled           = true
