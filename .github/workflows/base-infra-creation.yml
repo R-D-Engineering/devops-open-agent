@@ -45,6 +45,11 @@ jobs:
         with:
           terraform_version: 1.9.3
 
+      - name: Install AWS CLI
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install awscli
+
       # Optional: Enable caching to speed up init
       - name: Cache Terraform
         uses: actions/cache@v4
@@ -55,6 +60,9 @@ jobs:
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
           restore-keys: |
             ${{ runner.os }}-terraform-
+
+      - name: Bootstrap Terraform backend
+        run: bash ./bootstrap-backend.sh -var-file=${{ github.event.inputs.tfvars_file }}
 
       - name: Terraform Init
         run: terraform init -input=false
