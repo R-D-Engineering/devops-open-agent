@@ -15,13 +15,15 @@ resource "aws_iam_role" "eks-cluster-role" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "eks.amazonaws.com"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
       }
-      Action = "sts:AssumeRole"
-    }]
+    ]
   })
 }
 
@@ -65,9 +67,9 @@ resource "aws_iam_role_policy_attachment" "eks-AmazonEC2ContainerRegistryReadOnl
 }
 
 resource "aws_iam_role_policy_attachment" "eks-AmazonEBSCSIDriverPolicy" {
-  count      = var.is_eks_nodegroup_role_enabled ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-  role       = aws_iam_role.eks-nodegroup-role[count.index].name
+  count      = var.is_eks_role_enabled ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicyV2"
+  role       = aws_iam_role.ebs_csi_driver_role[count.index].name
 }
 
 # OIDC
@@ -103,16 +105,7 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
   count = var.is_eks_role_enabled ? 1 : 0
   name  = "${local.cluster_name_short}-ebs-csi-driver-role-${random_integer.random_suffix.result}"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "eks.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
+  assume_role_policy = data.aws_iam_policy_document.ebs_csi_oidc_assume_role_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
