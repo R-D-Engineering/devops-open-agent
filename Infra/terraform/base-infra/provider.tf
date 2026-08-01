@@ -15,7 +15,7 @@ terraform {
     bucket         = "devops-openagent-base"
     key            = "base-infra/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "devops-openagent-lock-files"
+    dynamodb_table = "devops0-openagent-base"
     encrypt        = true
   }
 }

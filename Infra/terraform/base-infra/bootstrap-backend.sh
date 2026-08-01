@@ -75,7 +75,8 @@ fi
 export AWS_REGION="$AWS_REGION"
 export AWS_DEFAULT_REGION="$AWS_REGION"
 
-DYNAMODB_TABLE_NAME="${PROJECT_NAME}-lock-files"
+# The backend lock table for bootstrap is distinct from the base infra module table.
+DYNAMODB_TABLE_NAME="devops0-openagent-base"
 
 # Ensure bucket exists
 if aws s3api head-bucket --bucket "$S3_BUCKET_NAME" >/dev/null 2>&1; then
