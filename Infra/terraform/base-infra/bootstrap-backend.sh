@@ -56,6 +56,8 @@ parse_tfvar() {
 }
 
 AWS_REGION="${AWS_REGION:-$(parse_tfvar aws_region)}"
+# The backend state bucket is created by this script and should match
+# the Terraform backend bucket configured in provider.tf.
 S3_BUCKET_NAME="${S3_BUCKET_NAME:-$(parse_tfvar s3_bucket_name)}"
 PROJECT_NAME="${PROJECT_NAME:-$(parse_tfvar project)}"
 
