@@ -40,7 +40,7 @@ resource "aws_eks_addon" "eks-addons" {
 
   cluster_name             = aws_eks_cluster.eks[0].name
   addon_name               = each.value.name
-  addon_version            = each.value.version
+  addon_version            = each.value.version == "" ? null : each.value.version
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
   service_account_role_arn = each.value.name == "aws-ebs-csi-driver" ? aws_iam_role.ebs_csi_driver_role[0].arn : null
@@ -59,7 +59,7 @@ resource "aws_eks_addon" "eks-addons" {
 # NodeGroups
 resource "aws_eks_node_group" "ondemand-node" {
   cluster_name    = aws_eks_cluster.eks[0].name
-  node_group_name = "${var.cluster-name}-on-demand-nodes"
+  node_group_name = "${var.cluster-name}-ondemand"
 
   node_role_arn = aws_iam_role.eks-nodegroup-role[0].arn
 
@@ -81,11 +81,11 @@ resource "aws_eks_node_group" "ondemand-node" {
     max_unavailable = 1
   }
   tags = {
-    "Name" = "${var.cluster-name}-ondemand-nodes"
+    "Name" = "${var.cluster-name}-ondemand"
   }
   tags_all = {
     "kubernetes.io/cluster/${var.cluster-name}" = "owned"
-    "Name"                                      = "${var.cluster-name}-ondemand-nodes"
+    "Name"                                      = "${var.cluster-name}-ondemand"
   }
 
   depends_on = [aws_eks_cluster.eks]
@@ -93,7 +93,7 @@ resource "aws_eks_node_group" "ondemand-node" {
 
 resource "aws_eks_node_group" "spot-node" {
   cluster_name    = aws_eks_cluster.eks[0].name
-  node_group_name = "${var.cluster-name}-spot-nodes"
+  node_group_name = "${var.cluster-name}-spot"
 
   node_role_arn = aws_iam_role.eks-nodegroup-role[0].arn
 
@@ -112,11 +112,11 @@ resource "aws_eks_node_group" "spot-node" {
     max_unavailable = 1
   }
   tags = {
-    "Name" = "${var.cluster-name}-spot-nodes"
+    "Name" = "${var.cluster-name}-spot"
   }
   tags_all = {
     "kubernetes.io/cluster/${var.cluster-name}" = "owned"
-    "Name"                                      = "${var.cluster-name}-ondemand-nodes"
+    "Name"                                      = "${var.cluster-name}-spot"
   }
   labels = {
     type      = "spot"

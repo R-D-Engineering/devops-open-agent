@@ -6,26 +6,27 @@ locals {
 module "eks" {
   source = "../modules"
   env    = var.env
-  # Use a fixed prefix to keep resource names predictable and short
-  cluster-name                   = "${local.prefix}-${substr(var.cluster-name, 0, 20)}"
+  # Use a fixed prefix to keep resource names predictable: devops-openagent-cluster
+  cluster-name                   = "${local.prefix}-cluster"
   cidr-block                     = var.vpc-cidr-block
-  vpc-name                       = "${local.prefix}-${substr(var.vpc-name, 0, 20)}"
+  vpc-name                       = "${local.prefix}-vpc"
   base_infra_s3_bucket_name      = var.base_infra_s3_bucket_name
   base_infra_dynamodb_table_name = var.base_infra_dynamodb_table_name
-  igw-name                       = "${local.prefix}-${substr(var.igw-name, 0, 20)}"
+  igw-name                       = "${local.prefix}-igw"
   pub-subnet-count               = var.pub-subnet-count
   pub-cidr-block                 = var.pub-cidr-block
   pub-availability-zone          = var.pub-availability-zone
-  pub-sub-name                   = "${local.prefix}-${substr(var.pub-sub-name, 0, 20)}"
+  pub-sub-name                   = "${local.prefix}-pub-sub"
   pri-subnet-count               = var.pri-subnet-count
   pri-cidr-block                 = var.pri-cidr-block
   pri-availability-zone          = var.pri-availability-zone
-  pri-sub-name                   = "${local.prefix}-${substr(var.pri-sub-name, 0, 20)}"
-  public-rt-name                 = "${local.prefix}-${substr(var.public-rt-name, 0, 20)}"
-  private-rt-name                = "${local.prefix}-${substr(var.private-rt-name, 0, 20)}"
-  eip-name                       = "${local.prefix}-${substr(var.eip-name, 0, 20)}"
-  ngw-name                       = "${local.prefix}-${substr(var.ngw-name, 0, 20)}"
-  eks-sg                         = var.eks-sg
+  pri-sub-name                   = "${local.prefix}-priv-sub"
+  public-rt-name                 = "${local.prefix}-pub-rt"
+  private-rt-name                = "${local.prefix}-priv-rt"
+  eip-name                       = "${local.prefix}-eip"
+  ngw-name                       = "${local.prefix}-ngw"
+  eks-sg                         = "${local.prefix}-sg"
+  resource_prefix                = local.prefix
 
   is_eks_role_enabled           = true
   is_eks_nodegroup_role_enabled = true
