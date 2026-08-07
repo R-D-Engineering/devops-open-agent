@@ -102,8 +102,12 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
   assume_role_policy = data.aws_iam_policy_document.ebs_csi_oidc_assume_role_policy.json
 }
 
+data "aws_iam_policy" "ebs_csi_driver_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/${var.ebs_csi_driver_policy_name}"
+}
+
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
   count      = var.is_eks_role_enabled ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicyV2"
+  policy_arn = data.aws_iam_policy.ebs_csi_driver_policy.arn
   role       = aws_iam_role.ebs_csi_driver_role[count.index].name
 }
