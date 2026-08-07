@@ -40,9 +40,10 @@ resource "aws_eks_addon" "eks-addons" {
 
   cluster_name             = aws_eks_cluster.eks[0].name
   addon_name               = each.value.name
-  addon_version            = each.value.version == "" ? null : each.value.version
-  resolve_conflicts         = "OVERWRITE"
-  service_account_role_arn = each.value.name == "aws-ebs-csi-driver" ? aws_iam_role.ebs_csi_driver_role[0].arn : null
+  addon_version                = each.value.version == "" ? null : each.value.version
+  resolve_conflicts_on_create  = "OVERWRITE"
+  resolve_conflicts_on_update  = "OVERWRITE"
+  service_account_role_arn     = each.value.name == "aws-ebs-csi-driver" ? aws_iam_role.ebs_csi_driver_role[0].arn : null
 
   timeouts {
     create = "40m"

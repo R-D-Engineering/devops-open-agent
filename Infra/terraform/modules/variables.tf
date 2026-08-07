@@ -72,6 +72,13 @@ variable "resource_prefix" {
   type = string
   description = "Short prefix used for resource names (e.g., devops-openagent)"
 }
+
+variable "ebs_csi_driver_policy_name" {
+  type        = string
+  description = "IAM managed policy name for the EBS CSI driver role"
+  default     = "AmazonEBSCSIDriverPolicy"
+}
+
 variable "ondemand_instance_types" {}
 variable "spot_instance_types" {}
 variable "desired_capacity_on_demand" {}
