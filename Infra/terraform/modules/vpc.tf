@@ -145,15 +145,22 @@ resource "aws_route_table_association" "private-rt-association" {
 
 resource "aws_security_group" "eks-cluster-sg" {
   name        = var.eks-sg
-  description = "Allow 443 from Jump Server only"
+  description = "Allow SSH and HTTPS from trusted sources"
 
   vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.bastion_allowed_cidr_blocks
+  }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] // It should be specific IP range
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

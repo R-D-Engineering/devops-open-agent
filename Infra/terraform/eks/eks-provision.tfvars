@@ -56,3 +56,5 @@ create_bastion        = true
 bastion_instance_type = "t2.medium"
 # index into public subnets (0..n-1)
 bastion_public_subnet_index = 0
+# Restrict bastion SSH access to trusted CIDR ranges only
+bastion_allowed_cidr_blocks = ["10.16.0.0/16"]

@@ -49,6 +49,11 @@ variable "bastion_public_subnet_index" {
   default = 0
 }
 
+variable "bastion_allowed_cidr_blocks" {
+  description = "CIDR blocks allowed to SSH to the bastion host"
+  type        = list(string)
+}
+
 #IAM
 variable "is_eks_role_enabled" {
   type = bool

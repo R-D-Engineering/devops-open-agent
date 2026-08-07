@@ -46,6 +46,7 @@ module "eks" {
   create_bastion              = var.create_bastion
   bastion_instance_type       = var.bastion_instance_type
   bastion_public_subnet_index = var.bastion_public_subnet_index
+  bastion_allowed_cidr_blocks = var.bastion_allowed_cidr_blocks
 
   addons = var.addons
 }
