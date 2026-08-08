@@ -46,7 +46,7 @@ output "eks_console_url" {
 # kubeconfig that can be written to ~/.kube/config (uses aws eks get-token to authenticate)
 output "kubeconfig" {
   description = "Kubeconfig YAML for the created EKS cluster (use with care)."
-  value = length(aws_eks_cluster.eks) > 0 ? <<-KUBECONF
+  value = length(aws_eks_cluster.eks) > 0 ? (<<-KUBECONF
 apiVersion: v1
 clusters:
 - cluster:
@@ -71,6 +71,6 @@ users:
         - "--cluster-name"
         - "${aws_eks_cluster.eks[0].name}"
 KUBECONF
- : ""
+) : ""
   sensitive = true
 }
