@@ -16,6 +16,21 @@ output "bastion_private_key_pem" {
   sensitive = true
 }
 
+output "vpc_id" {
+  description = "ID of the created VPC"
+  value       = aws_vpc.vpc.id
+}
+
+output "vpc_name" {
+  description = "Name tag of the created VPC"
+  value       = aws_vpc.vpc.tags["Name"]
+}
+
+output "vpc_cidr_block" {
+  description = "CIDR block for the created VPC"
+  value       = aws_vpc.vpc.cidr_block
+}
+
 # EKS cluster outputs
 output "eks_cluster_name" {
   description = "EKS cluster name"
