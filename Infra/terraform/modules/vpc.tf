@@ -143,17 +143,38 @@ resource "aws_route_table_association" "private-rt-association" {
   ]
 }
 
-resource "aws_security_group" "eks-cluster-sg" {
-  name        = var.eks-sg
-  description = "Allow 443 from Jump Server only"
+resource "aws_security_group" "bastion-sg" {
+  name        = "${var.resource_prefix}-bastion-sg"
+  description = "Allow SSH access to the bastion host"
 
   vpc_id = aws_vpc.vpc.id
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] // It should be specific IP range
+    cidr_blocks = var.bastion_allowed_cidr_blocks
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "eks-cluster-sg" {
+  name        = var.eks-sg
+  description = "Allow EKS API access only from bastion"
+
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion-sg.id]
   }
 
   egress {
