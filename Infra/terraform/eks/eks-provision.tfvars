@@ -57,6 +57,5 @@ bastion_instance_type = "t2.medium"
 # index into public subnets (0..n-1)
 bastion_public_subnet_index = 0
 # Replace this with your office/home public IP or VPN exit IP
-bastion_allowed_cidr_blocks = ["203.0.113.10/32"]
 # Restrict bastion SSH access to trusted CIDR ranges only
-bastion_allowed_cidr_blocks = ["10.16.0.0/16"]
+bastion_allowed_cidr_blocks = ["203.0.113.10/32", "10.16.0.0/16"]
